@@ -39,9 +39,9 @@ namespace DockSample
             // 
             this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid.LineColor = System.Drawing.SystemColors.ScrollBar;
-            this.propertyGrid.Location = new System.Drawing.Point(0, 3);
+            this.propertyGrid.Location = new System.Drawing.Point(0, 24);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(208, 283);
+            this.propertyGrid.Size = new System.Drawing.Size(208, 262);
             this.propertyGrid.TabIndex = 0;
             // 
             // comboBox

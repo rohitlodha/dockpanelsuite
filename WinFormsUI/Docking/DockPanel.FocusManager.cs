@@ -122,7 +122,7 @@ namespace WeifenLuo.WinFormsUI.Docking
             [ThreadStatic]
             private static LocalWindowsHook sm_localWindowsHook;
 
-            private LocalWindowsHook.HookEventHandler m_hookEventHandler;
+            private readonly LocalWindowsHook.HookEventHandler m_hookEventHandler;
 
             public FocusManagerImpl(DockPanel dockPanel)
             {
@@ -304,20 +304,25 @@ namespace WeifenLuo.WinFormsUI.Docking
                 return false;
             }
 
-            private int m_countSuspendFocusTracking = 0;
+            private uint m_countSuspendFocusTracking = 0;
             public void SuspendFocusTracking()
             {
-                m_countSuspendFocusTracking++;
-                if (!Win32Helper.IsRunningOnMono)
-                    sm_localWindowsHook.HookInvoked -= m_hookEventHandler;
+                if (m_disposed)
+                    return;
+
+                if (m_countSuspendFocusTracking++ == 0)
+                {
+                    if (!Win32Helper.IsRunningOnMono)
+                        sm_localWindowsHook.HookInvoked -= m_hookEventHandler;
+                }
             }
 
             public void ResumeFocusTracking()
             {
-                if (m_countSuspendFocusTracking > 0)
-                    m_countSuspendFocusTracking--;
+                if (m_disposed || m_countSuspendFocusTracking == 0)
+                    return;
 
-                if (m_countSuspendFocusTracking == 0)
+                if (--m_countSuspendFocusTracking == 0)
                 {
                     if (ContentActivating != null)
                     {
@@ -350,7 +355,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                     if (pane == null)
                         RefreshActiveWindow();
                 }
-                else if (msg == Win32.Msgs.WM_SETFOCUS)
+                else if (msg == Win32.Msgs.WM_SETFOCUS || msg == Win32.Msgs.WM_MDIACTIVATE)
                     RefreshActiveWindow();
             }
 

@@ -20,7 +20,7 @@ namespace DockSample
         private string m_fileName = string.Empty;
         public string FileName
         {
-            get    {    return m_fileName;    }
+            get	{	return m_fileName;	}
             set
             {
                 if (value != string.Empty)
